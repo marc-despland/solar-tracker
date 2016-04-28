@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "log.h"
+#include "phidget.h"
+#include <sstream>
 
 HttpServer::HttpServer(unsigned int port) {
 	this->port=port; 
@@ -31,7 +33,12 @@ void HttpServer::stop() {
 
 
 struct MHD_Response * HttpServer::getStatus() {
-	char * status=strdup("{\n\t\"status\": \"ok\"\n}");
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"status\": \"ok\"," << endl;
+	tmp << Phidget::board()->getStatus() <<endl;
+	tmp << "}" << endl;
+	char * status=strdup(tmp.str().c_str());
 	return MHD_create_response_from_buffer (strlen(status),(void*) status,MHD_RESPMEM_PERSISTENT);
 }
 

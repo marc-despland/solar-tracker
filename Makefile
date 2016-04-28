@@ -1,10 +1,10 @@
 SHELL = /bin/sh
 CC    = g++
 
-CPPFLAGS       = -g -Wall -Iinclude -std=c++11
+CPPFLAGS       = -g -Wall -Iinclude -std=c++11 
 OLDFLAGS	= -std=c++11
 CFLAGS       = $(CPPFLAGS) 
-LDLIBS		 = -lmicrohttpd
+LDLIBS		 = -lmicrohttpd -lphidget21
 TARGET  = solar-tracker
 SOURCES = $(shell echo src/*.cpp)
 HEADERS = $(shell echo include/*.h)

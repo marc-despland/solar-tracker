@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "httpserver.h"
 #include "log.h"
-
+#include "phidget.h"
 
 
 int main(int argc, char ** argv) {
@@ -14,7 +14,7 @@ int main(int argc, char ** argv) {
 	   argv[0]);
     return 1;
   }
-
+  Phidget::attach();
   HttpServer * server=new HttpServer(atoi(argv[1]));
   server->start();
   Log::logger->log("MAIN",NOTICE) << "Deamon start listening on port = " << argv[1] << endl;

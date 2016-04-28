@@ -13,3 +13,10 @@ Implementation of a Solar Tracker
 2. ./configure
 3. make
 4. sudo make install
+
+### Installation libphidget
+1. Install require package
+..* sudo yum install libusb-devel
+2. ./configure
+3. make
+4. sudo make install

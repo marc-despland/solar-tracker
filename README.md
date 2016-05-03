@@ -16,7 +16,16 @@ Implementation of a Solar Tracker
 
 ### Installation libphidget
 1. Install require package
-..* sudo yum install libusb-devel
+..* Install libusb-1.0
 2. ./configure
 3. make
 4. sudo make install
+
+### Installation libmaestro
+1. Install requirements
+..* sudo yum install cmake
+2. git clone https://github.com/pdehn/libmaestro.git
+3. cd libmaestro/build
+4. cmake ..
+5. make
+6. sudo make install

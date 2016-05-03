@@ -1,0 +1,32 @@
+#ifndef _EARTH_H
+#define _EARTH_H
+
+#include "servo.h"
+#include <time.h>
+#include <thread>
+
+class Earth : public Servo {
+
+public: 
+	
+	static void init(uint8_t servo, double longitude, double latitude);
+
+	static void start();
+	static void stop();
+protected:
+	static Earth * singleton;
+	Earth(uint8_t servo, double longitude, double latitude);
+	uint16_t initpos;
+	time_t inittime;
+	double longitude;
+	double latitude;
+	bool go;
+	std::thread * run;
+	static void execute();
+	
+
+
+};
+
+
+#endif

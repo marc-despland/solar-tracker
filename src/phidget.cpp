@@ -1,6 +1,8 @@
 #include "phidget.h"
 #include "log.h"
 #include <sstream>
+#include <cmath>
+#include <ctgmath>
 
 map<int, Phidget *>	Phidget::interfaces;
 
@@ -122,6 +124,9 @@ string Phidget::getStatus() {
 		tmp << "\t\t\"name\": \"" << this->name<<"\","<<endl;
 		tmp << "\t\t\"serial\": \"" << this->serial<<"\","<<endl;
 		tmp << "\t\t\"version\": \"" << version<<"\","<<endl;
+		tmp << "\t\t\"voltage\": \"" << this->getVoltage()<<"\","<<endl;
+		tmp << "\t\t\"left lux\": \"" << this->getLeftLux()<<"\","<<endl;
+		tmp << "\t\t\"right lux\": \"" << this->getRightLux()<<"\","<<endl;
 		tmp << "\t\t\"inputs\": [ ";
 		CPhidgetInterfaceKit_getInputCount(this->ifKit, &numInputs);
 		for (int i=0; i<numInputs; i++) {
@@ -180,4 +185,34 @@ void Phidget::setOutput(int index, bool state) {
 bool Phidget::attached() {
 	if (Phidget::singleton==NULL) return false;
 	return (Phidget::singleton->serial>0);
+}
+
+double Phidget::getVoltage() {
+	if (this->serial>0) {
+		int value;
+		CPhidgetInterfaceKit_getSensorValue(this->ifKit, 5, &value);
+		return ((((double) value/200)-2.5)/0.0681);
+	} else {
+		return -1;
+	}
+}
+
+double Phidget::getRightLux() {
+	if (this->serial>0) {
+		int value;
+		CPhidgetInterfaceKit_getSensorValue(this->ifKit, 6, &value);
+		return (exp((0.02293*value)+0.07776));
+	} else {
+		return -1;
+	}
+}
+
+double Phidget::getLeftLux() {
+	if (this->serial>0) {
+		int value;
+		CPhidgetInterfaceKit_getSensorValue(this->ifKit, 7, &value);
+		return (exp((0.02167*value)-1.0321));
+	} else {
+		return -1;
+	}
 }

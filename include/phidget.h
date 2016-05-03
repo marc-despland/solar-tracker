@@ -19,6 +19,9 @@ public:
 	string getStatus();
 	static bool attached();
 	static Phidget * board();
+	double getVoltage();
+	double getRightLux();
+	double getLeftLux();
 
 protected:
 

@@ -5,6 +5,7 @@
 #include <string.h>
 #include "log.h"
 #include "phidget.h"
+#include "maestro.h"
 #include <sstream>
 
 HttpServer::HttpServer(unsigned int port) {
@@ -36,7 +37,8 @@ struct MHD_Response * HttpServer::getStatus() {
 	stringstream tmp;
 	tmp << "{" << endl;
 	tmp << "\t\"status\": \"ok\"," << endl;
-	tmp << Phidget::board()->getStatus() <<endl;
+	tmp << Phidget::board()->getStatus() <<","<<endl;
+	tmp << Maestro::getStatus() <<endl;
 	tmp << "}" << endl;
 	char * status=strdup(tmp.str().c_str());
 	return MHD_create_response_from_buffer (strlen(status),(void*) status,MHD_RESPMEM_PERSISTENT);

@@ -96,6 +96,7 @@ private:
 public:
     static Maestro * controller;
     static std::string getStatus();
+    static bool init();
     /**
      * Basic constructor, will open the first valid device it finds.
      */

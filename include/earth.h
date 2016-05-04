@@ -13,6 +13,11 @@ public:
 
 	static void start();
 	static void stop();
+	static double getTheoricalAngle();
+	static double getTheoricalAngle(double longitude);
+	static double getRealAngle();
+	static bool running();
+	static Earth * instance();
 protected:
 	static Earth * singleton;
 	Earth(uint8_t servo, double longitude, double latitude);

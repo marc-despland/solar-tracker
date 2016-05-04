@@ -10,7 +10,17 @@ const uint16_t Maestro::productIds[] = { 0x0089, 0x008a, 0x008b, 0x008c };
 
 #define MAX_SERVOS  24
 
-Maestro * Maestro::controller=new Maestro();
+Maestro * Maestro::controller=NULL;
+
+bool Maestro::init() {
+  bool ret=true;
+  try {
+    Maestro::controller=new Maestro();
+  }catch(NoMaestroFoundError &e) {
+    ret=false;
+  }
+  return ret;
+}
 
 Maestro::Maestro() {
   libusb_init(&ctx);

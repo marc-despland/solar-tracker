@@ -8,6 +8,7 @@
 #include "earth.h"
 #include "options.h"
 #include "parameters.h"
+#include "tracker.h"
 
 int main(int argc, char ** argv) {
   Log::logger->setLevel(DEBUG);
@@ -42,7 +43,11 @@ int main(int argc, char ** argv) {
       try {
         params->parse();
         try {
-          Earth::init(params->get("earth-servo")->asInt(),params->get("longitude")->asDouble(),params->get("latitude")->asDouble());
+          if (Maestro::init()) {
+            Earth::init(params->get("earth-servo")->asInt(),params->get("longitude")->asDouble(),params->get("latitude")->asDouble());
+          } else {
+            Log::logger->log("MAIN",EMERGENCY) << "No Maestro controller detetcted" << endl;
+          }
           Phidget::attach();
           HttpServer * server=new HttpServer(params->get("http-port")->asInt());
           server->start();

@@ -16,11 +16,19 @@ public:
             void ** ptr);
 	void start();
 	void stop();
-private:
+protected:
 	unsigned int port;
 	struct MHD_Daemon * daemon;
 
-private:
+
+protected:
 	static struct MHD_Response * getStatus();
+	static struct MHD_Response * getServosStatus();
+	static struct MHD_Response * startEarthRotation();
+	static struct MHD_Response * stopEarthRotation();
+	static struct MHD_Response * statusEarthRotation();
+	static struct MHD_Response * scanForTheSun();
+	static struct MHD_Response * setServoPosition(int servo, int position);
+	static struct MHD_Response * setServoAngle(int servo, double angle);
 };
 #endif

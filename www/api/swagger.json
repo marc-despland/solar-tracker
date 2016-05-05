@@ -339,7 +339,7 @@
                         "format": "int32"
                     },
                     {
-                        "name": "position",
+                        "name": "angle",
                         "in": "path",
                         "description": "The new angle",
                         "required": true,

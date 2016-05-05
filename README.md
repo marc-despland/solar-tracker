@@ -25,16 +25,15 @@ Raspbian
 
 ### Installation libphidget
 1. Install require package
-..* Install libusb-1.0
+ * Install libusb-1.0
 2. ./configure
 3. make
 4. sudo make install
 
-### Installation libmaestro
-1. Install requirements
-..* sudo yum install cmake
-2. git clone https://github.com/pdehn/libmaestro.git
-3. cd libmaestro/build
-4. cmake ..
-5. make
-6. sudo make install
+## Turn the Raspberry PI as a WIFI access point
+I use this article to start the configuration : [adafruit](https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/install-software)
+
+The idea is to have the Raspberry PI acting as a WiFi access point that will allow me to attach my iPad to control it, and still keeping the ability to connect it on the network using cable.
+
+1. Install the software
+`sudo apt-get install hostapd isc-dhcp-server`

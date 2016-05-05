@@ -136,6 +136,232 @@
                     }
                 }
             }
+        },
+        "/api/earthrotate/start": {
+            "get": {
+                "tags": [
+                    "earth"
+                ],
+                "description": "Start the servo that compensate Earth's  rotation",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Operation",
+                            "type": "object",
+                            "properties": {
+                                "earth": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/earthrotate/stop": {
+            "get": {
+                "tags": [
+                    "earth"
+                ],
+                "description": "Stop the servo that compensate Earth's  rotation",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Operation",
+                            "type": "object",
+                            "properties": {
+                                "earth": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/earthrotate/status": {
+            "get": {
+                "tags": [
+                    "status",
+                    "earth"
+                ],
+                "description": "Return the status of the Earth's rotation compensation",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Operation",
+                            "type": "object",
+                            "properties": {
+                                "rotation": {
+                                    "type": "string"
+                                },
+                                "angle": {
+                                    "type": "number",
+                                    "format": "double"
+                                },
+                                "theorical": {
+                                    "type": "number",
+                                    "format": "double"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tracker/scan": {
+            "get": {
+                "tags": [
+                    "tracker"
+                ],
+                "description": "Start the scan to locate the sun, and put the servo that compensate the Earth's rotation in the right direction",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Scan",
+                            "type": "object",
+                            "properties": {
+                                "left": {
+                                    "type": "object",
+                                    "properties": {
+                                        "lux": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "angle": {
+                                            "type": "number",
+                                            "format": "double"
+                                        }
+                                    }
+                                },
+                                "right": {
+                                    "type": "object",
+                                    "properties": {
+                                        "lux": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "angle": {
+                                            "type": "number",
+                                            "format": "double"
+                                        }
+                                    }
+                                },
+                                "total": {
+                                    "type": "object",
+                                    "properties": {
+                                        "lux": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "angle": {
+                                            "type": "number",
+                                            "format": "double"
+                                        }
+                                    }
+                                },
+                                "situation": {
+                                    "type": "object",
+                                    "properties": {
+                                        "angle": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "theorical": {
+                                            "type": "number",
+                                            "format": "double"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/servo/{servoid}/position/{position}": {
+            "get": {
+                "tags": [
+                    "servo"
+                ],
+                "description": "Put the servo in the right position",
+                "parameters": [
+                    {
+                        "name": "servoid",
+                        "in": "path",
+                        "description": "The ID of the servo to modify",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "description": "The new position of the servo",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Operation",
+                            "type": "object",
+                            "properties": {
+                                "servo": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/servo/{servoid}/angle/{angle}": {
+            "get": {
+                "tags": [
+                    "servo"
+                ],
+                "description": "Put the servo in the right position",
+                "parameters": [
+                    {
+                        "name": "servoid",
+                        "in": "path",
+                        "description": "The ID of the servo to modify",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "description": "The new angle",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Operation",
+                            "type": "object",
+                            "properties": {
+                                "servo": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

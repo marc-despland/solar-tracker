@@ -50,7 +50,7 @@ int main(int argc, char ** argv) {
             Log::logger->log("MAIN",EMERGENCY) << "No Maestro controller detetcted" << endl;
           }
           Phidget::attach();
-          HttpServer * server=new HttpServer(params->get("http-port")->asInt());
+          HttpServer * server=new HttpServer(params->get("http-port")->asInt(), params->get("document-root")->asString());
           server->start();
           Log::logger->log("MAIN",NOTICE) << "Deamon start listening on port = " << params->get("http-port")->asInt() << endl;
           (void) getc (stdin);

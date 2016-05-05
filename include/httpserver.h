@@ -1,10 +1,11 @@
 #ifndef HTTPSERVER_H
 #define HTTPSERVER_H
 #include <microhttpd.h>
+#include <string>
 
 class HttpServer {
 public:
-	HttpServer(unsigned int port);
+	HttpServer(unsigned int port, std::string documentroot);
 	~HttpServer();
 	static int requesthandler(void * cls,
 		    struct MHD_Connection * connection,
@@ -19,6 +20,7 @@ public:
 protected:
 	unsigned int port;
 	struct MHD_Daemon * daemon;
+	static std::string documentroot;
 
 
 protected:

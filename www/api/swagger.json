@@ -1,0 +1,141 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Solar-Tracker API"
+    },
+    "paths": {
+        "/api/status": {
+            "get": {
+                "tags": [
+                    "status"
+                ],
+                "description": "Return the status of the server and the detail of each of its components.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "Status",
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string"
+                                },
+                                "phydget": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "serial": {
+                                            "type": "string"
+                                        },
+                                        "version": {
+                                            "type": "string"
+                                        },
+                                        "voltage": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "leftlux": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "rightlux": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "inputs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            }
+                                        },
+                                        "outputs": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            }
+                                        },
+                                        "sensors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            }
+                                        }
+                                    }
+                                },
+                                "maestro": {
+                                    "type": "object",
+                                    "properties": {
+                                        "position": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/servos/status": {
+            "get": {
+                "tags": [
+                    "status",
+                    "servo"
+                ],
+                "description": "Return the status of the servos",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "schema": {
+                            "title": "ServoStatus",
+                            "type": "object",
+                            "properties": {
+                                "servos": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "code": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "position": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            },
+                                            "angle": {
+                                                "type": "number",
+                                                "format": "double"
+                                            },
+                                            "min": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            },
+                                            "max": {
+                                                "type": "number",
+                                                "format": "int32"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

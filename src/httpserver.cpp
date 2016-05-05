@@ -10,10 +10,17 @@
 #include "earth.h"
 #include "tracker.h"
 #include <sstream>
+#include <sys/stat.h> 
+#include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 
-HttpServer::HttpServer(unsigned int port) {
+std::string HttpServer::documentroot="./";
+
+HttpServer::HttpServer(unsigned int port, std::string documentroot) {
 	this->port=port; 
+	HttpServer::documentroot=documentroot;
 
 }
 
@@ -211,6 +218,23 @@ int HttpServer::requesthandler(void * cls,
 		Log::logger->log("HTTP",NOTICE) << "Matching set servo position : " << servo << endl;
 		response=HttpServer::setServoAngle(servo, angle);
 		ret=MHD_HTTP_OK;
+	}
+	if (ret==MHD_NO) {
+		Log::logger->log("HTTP",NOTICE) << url << "not a defined in the api" << endl;
+		int fd=-1;
+		string filename=HttpServer::documentroot+url;
+		if ((fd = open(filename.c_str(), O_RDONLY)) == -1) {
+			Log::logger->log("HTTP",NOTICE) << "File " << filename << " not found on this server" << endl;
+			char * data = strdup("<html><body><p>404 Not Found</p></body></html>");
+			response = MHD_create_response_from_buffer(strlen(data), data,MHD_RESPMEM_PERSISTENT);
+			ret=404;
+		} else {
+			Log::logger->log("HTTP",NOTICE) << filename.c_str() << " existed" << endl;
+			struct stat infos;
+			fstat(fd, &infos);
+			response=MHD_create_response_from_fd (infos.st_size, fd);
+			ret=MHD_HTTP_OK;
+		}
 	}
 	if (response!=NULL) {
 		ret = MHD_queue_response(connection,ret,response);

@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 CC    = g++
 
-CPPFLAGS       = -g -Wall -Iinclude -std=c++11 
+CPPFLAGS       = -g -Wall -Iinclude -std=c++0x
 OLDFLAGS	= -std=c++11
 CFLAGS       = $(CPPFLAGS) 
 LDLIBS		 = -lmicrohttpd -lphidget21 -lusb-1.0

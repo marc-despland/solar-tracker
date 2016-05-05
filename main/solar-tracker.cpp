@@ -25,6 +25,7 @@ int main(int argc, char ** argv) {
       config=options.get("config")->asString();
     }
     Parameters * params=new Parameters(config);
+    params->add("document-root", "Root folder to serve documents", true);
     params->add("http-port", "The port number of the http server", true);
     params->add("earth-servo", "The number of the servo associate to Earth rotation", true);
     params->add("longitude", "The longitude of the installation point", true);

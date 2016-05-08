@@ -1,0 +1,4 @@
+*.o
+solar-tracker
+src/*.o
+main/*.o

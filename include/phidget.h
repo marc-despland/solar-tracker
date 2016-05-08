@@ -16,7 +16,7 @@ public:
 	static Phidget * singleton;
 	static bool attach();
 
-	string getStatus();
+	static string getStatus();
 	static bool attached();
 	static Phidget * board();
 	double getVoltage();

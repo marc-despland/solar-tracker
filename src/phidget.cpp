@@ -14,7 +14,7 @@ Phidget * Phidget::board() {
 
 bool Phidget::attach() {
 	Phidget::singleton=new Phidget();
-	return Phidget::singleton->attached();
+	return Phidget::attached();
 }
 
 Phidget::Phidget() {
@@ -117,21 +117,21 @@ int CCONV Phidget::sensorChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usr
 string Phidget::getStatus() {
 	int numInputs, numOutputs, numSensors;
 	stringstream tmp;
-	if (this->serial >0) {
+	if (Phidget::attached()) {
 		int version;
-		CPhidget_getDeviceVersion((CPhidgetHandle)this->ifKit, &version);
+		CPhidget_getDeviceVersion((CPhidgetHandle)Phidget::board()->ifKit, &version);
 		tmp << "\t\"phidget\" : {" <<endl;
-		tmp << "\t\t\"name\": \"" << this->name<<"\","<<endl;
-		tmp << "\t\t\"serial\": \"" << this->serial<<"\","<<endl;
+		tmp << "\t\t\"name\": \"" << Phidget::board()->name<<"\","<<endl;
+		tmp << "\t\t\"serial\": \"" << Phidget::board()->serial<<"\","<<endl;
 		tmp << "\t\t\"version\": \"" << version<<"\","<<endl;
-		tmp << "\t\t\"voltage\": \"" << this->getVoltage()<<"\","<<endl;
-		tmp << "\t\t\"left lux\": \"" << this->getLeftLux()<<"\","<<endl;
-		tmp << "\t\t\"right lux\": \"" << this->getRightLux()<<"\","<<endl;
+		tmp << "\t\t\"voltage\": \"" << Phidget::board()->getVoltage()<<"\","<<endl;
+		tmp << "\t\t\"left lux\": \"" << Phidget::board()->getLeftLux()<<"\","<<endl;
+		tmp << "\t\t\"right lux\": \"" << Phidget::board()->getRightLux()<<"\","<<endl;
 		tmp << "\t\t\"inputs\": [ ";
-		CPhidgetInterfaceKit_getInputCount(this->ifKit, &numInputs);
+		CPhidgetInterfaceKit_getInputCount(Phidget::board()->ifKit, &numInputs);
 		for (int i=0; i<numInputs; i++) {
 			int value;
-			CPhidgetInterfaceKit_getInputState(this->ifKit, i, &value);
+			CPhidgetInterfaceKit_getInputState(Phidget::board()->ifKit, i, &value);
 			if (i<numInputs-1) {
 				tmp << value << ", ";
 			} else {
@@ -139,10 +139,10 @@ string Phidget::getStatus() {
 			}
 		}
 		tmp << "\t\t\"outputs\": [ ";
-		CPhidgetInterfaceKit_getOutputCount(this->ifKit, &numOutputs);
+		CPhidgetInterfaceKit_getOutputCount(Phidget::board()->ifKit, &numOutputs);
 		for (int i=0; i<numOutputs; i++) {
 			int value;
-			CPhidgetInterfaceKit_getOutputState(this->ifKit, i, &value);
+			CPhidgetInterfaceKit_getOutputState(Phidget::board()->ifKit, i, &value);
 			if (i<numOutputs-1) {
 				tmp << value << ", ";
 			} else {
@@ -150,10 +150,10 @@ string Phidget::getStatus() {
 			}
 		}
 		tmp << "\t\t\"sensors\": [ ";
-		CPhidgetInterfaceKit_getSensorCount(this->ifKit, &numSensors);
+		CPhidgetInterfaceKit_getSensorCount(Phidget::board()->ifKit, &numSensors);
 		for (int i=0; i<numSensors; i++) {
 			int value;
-			CPhidgetInterfaceKit_getSensorValue(this->ifKit, i, &value);
+			CPhidgetInterfaceKit_getSensorValue(Phidget::board()->ifKit, i, &value);
 			if (i<numSensors-1) {
 				tmp << value << ", ";
 			} else {

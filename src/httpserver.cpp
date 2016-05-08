@@ -48,7 +48,7 @@ struct MHD_Response * HttpServer::getStatus() {
 	stringstream tmp;
 	tmp << "{" << endl;
 	tmp << "\t\"status\": \"ok\"," << endl;
-	tmp << Phidget::board()->getStatus() <<","<<endl;
+	tmp << Phidget::getStatus() <<","<<endl;
 	tmp << Maestro::getStatus() <<endl;
 	tmp << "}" << endl;
 	char * status=strdup(tmp.str().c_str());
@@ -92,6 +92,31 @@ struct MHD_Response * HttpServer::setServoPosition(int num, int position) {
 	char * response=strdup(tmp.str().c_str());
 	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
 }
+
+struct MHD_Response * HttpServer::setServoSpeed(int num, int speed) {
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"servo\" : \"ok\""<<endl;
+	tmp << "}"<< endl;
+	Servo * servo=Servo::servos[num];
+	if (servo!=NULL) {
+		servo->setSpeed(speed);
+	}
+	char * response=strdup(tmp.str().c_str());
+	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
+}
+struct MHD_Response * HttpServer::setServoAcceleration(int num, int acceleration) {
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"servo\" : \"ok\""<<endl;
+	tmp << "}"<< endl;
+	Servo * servo=Servo::servos[num];
+	if (servo!=NULL) {
+		servo->setAcceleration(acceleration);
+	}
+	char * response=strdup(tmp.str().c_str());
+	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
+}
 struct MHD_Response * HttpServer::setServoAngle(int num, double angle) {
 	stringstream tmp;
 	tmp << "{" << endl;
@@ -100,6 +125,44 @@ struct MHD_Response * HttpServer::setServoAngle(int num, double angle) {
 	Servo * servo=Servo::servos[num];
 	if (servo!=NULL) {
 		servo->setAngle(angle);
+	}
+	char * response=strdup(tmp.str().c_str());
+	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
+}
+struct MHD_Response * HttpServer::setServoMin(int num, int min) {
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"servo\" : \"ok\""<<endl;
+	tmp << "}"<< endl;
+	Servo * servo=Servo::servos[num];
+	if (servo!=NULL) {
+		servo->setMin(min);
+	}
+	char * response=strdup(tmp.str().c_str());
+	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
+}
+
+struct MHD_Response * HttpServer::setServoMax(int num, int max) {
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"servo\" : \"ok\""<<endl;
+	tmp << "}"<< endl;
+	Servo * servo=Servo::servos[num];
+	if (servo!=NULL) {
+		servo->setMax(max);
+	}
+	char * response=strdup(tmp.str().c_str());
+	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
+}
+
+struct MHD_Response * HttpServer::setServoNeutral(int num, int neutral) {
+	stringstream tmp;
+	tmp << "{" << endl;
+	tmp << "\t\"servo\" : \"ok\""<<endl;
+	tmp << "}"<< endl;
+	Servo * servo=Servo::servos[num];
+	if (servo!=NULL) {
+		servo->setNeutral(neutral);
 	}
 	char * response=strdup(tmp.str().c_str());
 	return MHD_create_response_from_buffer (strlen(response),(void*) response,MHD_RESPMEM_PERSISTENT);
@@ -181,7 +244,7 @@ int HttpServer::requesthandler(void * cls,
 		    size_t * upload_data_size,
             void ** ptr) {
 	int ret=MHD_NO;
-	int servo, position;
+	int servo, position, speed, acceleration, min, max, neutral;
 	double angle;
 	struct MHD_Response * response=NULL;
 	Log::logger->log("HTTP",NOTICE) << method << " " << url << " (" << *upload_data_size << ")" << endl;
@@ -210,13 +273,38 @@ int HttpServer::requesthandler(void * cls,
 		ret=MHD_HTTP_OK;
 	}
 	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/position/%d",&servo, &position)==2) && (strcmp(method, "GET")==0)) {
-		Log::logger->log("HTTP",NOTICE) << "Matching set servo position : " << servo << endl;
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo position : " << servo << " position: " << position<< endl;
 		response=HttpServer::setServoPosition(servo, position);
 		ret=MHD_HTTP_OK;
 	}
 	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/angle/%lf",&servo, &angle)==2) && (strcmp(method, "GET")==0)) {
-		Log::logger->log("HTTP",NOTICE) << "Matching set servo position : " << servo << endl;
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo angle : " << servo << " angle: " << angle << endl;
 		response=HttpServer::setServoAngle(servo, angle);
+		ret=MHD_HTTP_OK;
+	}
+	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/speed/%d",&servo, &speed)==2) && (strcmp(method, "GET")==0)) {
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo speed : " << servo << " speed: " << speed<< endl;
+		response=HttpServer::setServoSpeed(servo, speed);
+		ret=MHD_HTTP_OK;
+	}
+	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/acceleration/%d",&servo, &acceleration)==2) && (strcmp(method, "GET")==0)) {
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo acceleration : " << servo << " acceleration: " << acceleration<< endl;
+		response=HttpServer::setServoAcceleration(servo, acceleration);
+		ret=MHD_HTTP_OK;
+	}
+	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/min/%d",&servo, &min)==2) && (strcmp(method, "GET")==0)) {
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo min : " << servo << " min: " << min<< endl;
+		response=HttpServer::setServoMin(servo, min);
+		ret=MHD_HTTP_OK;
+	}
+	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/max/%d",&servo, &max)==2) && (strcmp(method, "GET")==0)) {
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo max : " << servo << " max: " << max<< endl;
+		response=HttpServer::setServoMax(servo, max);
+		ret=MHD_HTTP_OK;
+	}
+	if ((ret==MHD_NO) && (sscanf(url, "/api/servo/%d/neutral/%d",&servo, &neutral)==2) && (strcmp(method, "GET")==0)) {
+		Log::logger->log("HTTP",NOTICE) << "Matching set servo neutral : " << servo << " neutral: " << neutral<< endl;
+		response=HttpServer::setServoNeutral(servo, neutral);
 		ret=MHD_HTTP_OK;
 	}
 	if (ret==MHD_NO) {

@@ -30,7 +30,12 @@ protected:
 	static struct MHD_Response * stopEarthRotation();
 	static struct MHD_Response * statusEarthRotation();
 	static struct MHD_Response * scanForTheSun();
+	static struct MHD_Response * setServoSpeed(int servo, int speed);
+	static struct MHD_Response * setServoAcceleration(int servo, int acceleration);
 	static struct MHD_Response * setServoPosition(int servo, int position);
 	static struct MHD_Response * setServoAngle(int servo, double angle);
+	static struct MHD_Response * setServoMin(int servo, int min);
+	static struct MHD_Response * setServoMax(int servo, int max);
+	static struct MHD_Response * setServoNeutral(int servo, int neutral);
 };
 #endif

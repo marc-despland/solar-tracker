@@ -47,6 +47,19 @@ char * Variable::asChars() {
 	return strdup(this->value.c_str());
 }
 
+bool Variable::asBool() {
+	if (this->value.compare("1")==0) return true;
+	if (this->value.compare("true")==0) return true;
+	if (this->value.compare("True")==0) return true;
+	if (this->value.compare("TRUE")==0) return true;
+	if (this->value.compare("on")==0) return true;
+	if (this->value.compare("On")==0) return true;
+	if (this->value.compare("ON")==0) return true;
+	if (this->value.compare("yes")==0) return true;
+	if (this->value.compare("Yes")==0) return true;
+	if (this->value.compare("YES")==0) return true;
+	return false;
+}
 
 bool Variable::isAssign() {
 	return this->assign;

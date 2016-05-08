@@ -80,25 +80,27 @@ struct servoSetting
  */
 struct uscVariables
 {
-    uint8_t stackPointer;
-    uint8_t callStackPointer;
-    uint16_t errors;
-    uint16_t programCounter;
-    int16_t buffer[3]; // protects other RAM from being corrupted by improper instructions
-    int16_t stack[32];
-    uint16_t callStack[10];
-    uint8_t scriptDone; // 1 = done; 2 = about to run a single step then be done - placed here to protect against accidental overwriting of servoSetting
-    uint8_t buffer2; // protects other RAM from being corrupted by improper instructions
+    uint8_t stackPointer;  		//1
+    uint8_t callStackPointer;	//2
+    uint16_t errors;			//4
+    uint16_t programCounter;	//6
+    int16_t buffer[3]; 			//12 protects other RAM from being corrupted by improper instructions
+    int16_t stack[32];			//76
+    uint16_t callStack[10];		//96
+    uint8_t scriptDone; 		//97  1 = done; 2 = about to run a single step then be done - placed here to protect against accidental overwriting of servoSetting
+    uint8_t buffer2; 			//98 protects other RAM from being corrupted by improper instructions
     struct servoSetting servoSetting[6];
-};
+}; //140
 
+#pragma pack(push)
+#pragma pack(1)
 struct ServoStatus{
     uint16_t position;
     uint16_t target;
     uint16_t speed;
     uint8_t acceleration;
 };
-
+#pragma pack(pop)
 struct MaestroVariables {
     uint8_t stackPointer;
     uint8_t callStackPointer;

@@ -92,9 +92,10 @@ private:
     static std::string errorDescription(int error);
 
     void getVariablesMicroMaestro(MaestroVariables variables, short * stack[], ushort * callStack[], ServoStatus * servos[]);
+    static Maestro * controller;
 
 public:
-    static Maestro * controller;
+	static bool detected;
     static std::string getStatus();
     static bool init();
     /**
@@ -112,21 +113,27 @@ public:
      * @param servo 0-indexed servo number.
      * @param value Pulse width in 0.25µs increments (e.g. for 1000µs you should pass 4000)
      */
-    void setTarget(uint8_t servo, uint16_t value);
+    static void setTarget(uint8_t servo, uint16_t value);
 
     /**
      * Set the maximum travel speed. This controls how quickly the PWM signal will move to the target value.
      * @param servo 0-indexed servo number.
      * @param value Maximun pulse width change rate, in 0.25µs/10ms
      */
-    void setSpeed(uint8_t servo, uint16_t value);
+    static void setSpeed(uint8_t servo, uint16_t value);
 
     /**
      * Set the maximum acceleration.
      * @param servo 0-indexed servo number.
      * @param value Has a value in range (0..255) with units 0.25µs/10ms/80ms
      */
-    void setAcceleration(uint8_t servo, uint16_t value);
+    static void setAcceleration(uint8_t servo, uint8_t value);
     void getVariablesServos(ServoStatus * servos[]);
     size_t getServosCount();
+    static uint16_t getServoMinPosition(uint8_t servo);
+    static uint16_t getServoMaxPosition(uint8_t servo);
+    static uint16_t getServoNeutralPosition(uint8_t servo);
+    static void setServoMinPosition(uint8_t servo, uint16_t min);
+    static void setServoMaxPosition(uint8_t servo, uint16_t max);
+    static void setServoNeutralPosition(uint8_t servo, uint16_t neutral);
 };

@@ -9,6 +9,7 @@
 #include "options.h"
 #include "parameters.h"
 #include "tracker.h"
+#include <unistd.h>
 
 int main(int argc, char ** argv) {
   Log::logger->setLevel(DEBUG);
@@ -26,10 +27,16 @@ int main(int argc, char ** argv) {
     }
     Parameters * params=new Parameters(config);
     params->add("document-root", "Root folder to serve documents", true);
-    params->add("http-port", "The port number of the http server", true);
-    params->add("earth-servo", "The number of the servo associate to Earth rotation", true);
     params->add("longitude", "The longitude of the installation point", true);
     params->add("latitude", "The latitude of the installation point", true);
+    params->add("http-port", "The port number of the http server", true);
+    params->add("have-phidget", "Declare if yes or no we have a phidget 8/8/8 board connected", true);
+    params->add("have-maestro", "Declare if yes or no we have a micro maestro board connected", true);
+
+    params->add("earth-servo", "The code number of the servo associate to Earth rotation", false);
+    params->add("pole-servo", "The code number of the servo to align to the celest pole", false);
+    params->add("ecliptic-servo", "The code number of the servo to align ecliptic plan", false);
+    params->add("reverse-earth-servo", "The code number of the servo to reverse earth rotation (mirror alignment)", false);
 
 
     if (options.get("create")->isAssign()) {
@@ -40,24 +47,37 @@ int main(int argc, char ** argv) {
       }
       exit(0);
     }
+    Servo * pole=NULL;
+    Servo * ecliptic=NULL;
+    Servo * reverse=NULL;
     try {
       try {
         params->parse();
         try {
-          if (Maestro::init()) {
-            Earth::init(params->get("earth-servo")->asInt(),params->get("longitude")->asDouble(),params->get("latitude")->asDouble());
-          } else {
-            Log::logger->log("MAIN",EMERGENCY) << "No Maestro controller detetcted" << endl;
-          }
-          Phidget::attach();
-          HttpServer * server=new HttpServer(params->get("http-port")->asInt(), params->get("document-root")->asString());
-          server->start();
-          Log::logger->log("MAIN",NOTICE) << "Deamon start listening on port = " << params->get("http-port")->asInt() << endl;
-          (void) getc (stdin);
-          Earth::stop();
-          server->stop();
+        	if (params->get("have-maestro")->asBool()) {
+           		if (Maestro::init()) {
+            		if (params->get("pole-servo")->isAssign()) pole=new Servo(params->get("pole-servo")->asInt(), "pole orientation");
+            		usleep(500000);
+            		if (params->get("earth-servo")->isAssign()) Earth::init(params->get("earth-servo")->asInt(),params->get("longitude")->asDouble(),params->get("latitude")->asDouble());
+            		usleep(500000);
+            		if (params->get("ecliptic-servo")->isAssign()) ecliptic=new Servo(params->get("ecliptic-servo")->asInt(), "ecliptic");
+            		usleep(500000);
+            		if (params->get("reverse-earth-servo")->isAssign()) reverse=new Servo(params->get("reverse-earth-servo")->asInt(), "reverse");
+          		} else {
+            		Log::logger->log("MAIN",EMERGENCY) << "No Maestro controller detected" << endl;
+          		}
+          	}
+          	if (params->get("have-phidget")->asBool()) {
+          		Phidget::attach();
+          	}
+          	HttpServer * server=new HttpServer(params->get("http-port")->asInt(), params->get("document-root")->asString());
+          	server->start();
+          	Log::logger->log("MAIN",NOTICE) << "Deamon start listening on port = " << params->get("http-port")->asInt() << endl;
+          	(void) getc (stdin);
+          	Earth::stop();
+          	server->stop();
         } catch (UnknownParameterNameException &e) {
-          Log::logger->log("GLOBAL", EMERGENCY) << "Not defined parameter " << endl;
+        	Log::logger->log("GLOBAL", EMERGENCY) << "Not defined parameter " << endl;
         }
       }catch(FileNotFoundException &e) {
         Log::logger->log("GLOBAL", EMERGENCY) << "Can't open file " << config<< endl;

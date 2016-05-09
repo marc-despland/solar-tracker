@@ -58,7 +58,7 @@ Earth::Earth(uint8_t servo, double longitude, double latitude) : Servo( servo, "
 	this->setAngle(Earth::getTheoricalAngle(longitude));
 	this->initpos=this->getPosition();
 
-	Log::logger->log("Earth",DEBUG) << "Earth tracker initialize servo("<<servo<< ") position:" << this->initpos << endl;
+	Log::logger->log("Earth",DEBUG) << "Earth tracker initialize servo("<<(uint16_t) servo<< ") position:" << this->initpos << endl;
 }
 
 void Earth::start() {

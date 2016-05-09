@@ -19,7 +19,7 @@ void Tracker::scan() {
 	uint16_t start=earth->getMin();
 	uint16_t end=earth->getMax();
 	uint16_t step=(end-start)/100;
-	earth->setPosition(0);
+	earth->setPosition(start);
 	usleep(1000000);
 	for (uint16_t i=start; i<end; i+=step) {
 		earth->setPosition(i);

@@ -21,6 +21,7 @@ void Servo::setPosition(uint16_t position) {
 	if (position>this->max) position=max;
 	if (position<this->min) position=min;
 	this->position=position;
+	Log::logger->log("SERVO",DEBUG) << "Servo " << (uint16_t) this->num << " : " << this->name << " set position "<< position <<endl;
 	Maestro::setTarget(this->num, this->position);
 }
 

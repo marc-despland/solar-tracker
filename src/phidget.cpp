@@ -74,8 +74,8 @@ int CCONV Phidget::attachHandler(CPhidgetHandle IFK, void *userptr) {
 };
 
 
-void Phidget::addInputHandler(PhidgetAction * handler) {
-	this->inputHandler.push_back(handler);
+void Phidget::addInputHandler(PhidgetListener * listener) {
+	this->addListener(listener);
 }
 
 
@@ -102,9 +102,8 @@ int CCONV Phidget::errorHandler(CPhidgetHandle IFK, void *userptr, int errorCode
 int CCONV Phidget::inputChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int index, int state){
 	Log::logger->log("PHIDGET",DEBUG) << "InputChangeHandler index:"<<index<< " state:"<< state << endl;
 	if (Phidget::singleton!=NULL) {
-		for (std::vector<PhidgetAction *>::iterator it = Phidget::singleton->inputHandler.begin() ; it != Phidget::singleton->inputHandler.end(); ++it) {
-			(*it)->inputEvent(index, state);
-		}
+		InputEvent * evt=new InputEvent(index, state);
+		Phidget::singleton->sendEvent(evt);
 	}
 	return 0;
 };

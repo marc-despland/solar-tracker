@@ -9,8 +9,11 @@ using namespace std;
 #include <string>
 #include "phidgetaction.h"
 #include <vector>
+#include "eventmanager.h"
+#include "phidgetlistener.h"
+#include "inputevent.h"
 
-class Phidget {
+class Phidget :public EventManager {
 public:
 	Phidget();
 	~Phidget();
@@ -24,7 +27,7 @@ public:
 	double getVoltage();
 	double getRightLux();
 	double getLeftLux();
-	void addInputHandler(PhidgetAction * handler);
+	void addInputHandler(PhidgetListener * listener);
 	void setOutput(int index, bool state);
 
 protected:
@@ -32,8 +35,7 @@ protected:
 	int serial;
 	const char * name;
 	CPhidgetInterfaceKitHandle ifKit;
-	
-	std::vector<PhidgetAction *> inputHandler;
+
 
 	static int CCONV attachHandler(CPhidgetHandle IFK, void *userptr);
 	static int CCONV detachHandler(CPhidgetHandle IFK, void *userptr);

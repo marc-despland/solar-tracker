@@ -1,9 +1,9 @@
 #ifndef _TRACKER_H
 #define _TRACKER_H
 #include "config.h"
-#include "phidgetaction.h"
+#include "phidgetlistener.h"
 
-class Tracker : public PhidgetAction{
+class Tracker : public PhidgetListener{
 public:
 	static Tracker * tracker();
 	static void attachPhidget();

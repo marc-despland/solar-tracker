@@ -4,9 +4,9 @@
 #include "servo.h"
 #include <time.h>
 #include <thread>
-#include "phidgetaction.h"
+#include "phidgetlistener.h"
 
-class Earth : public Servo, PhidgetAction {
+class Earth : public Servo, PhidgetListener {
 
 public: 
 	

@@ -21,7 +21,6 @@ Phidget::Phidget() {
 	int result;
 	const char *err;
 	Log::logger->log("PHIDGET",DEBUG) << "Constructor call" << endl;
-	this->inputHandler=NULL;
 	CPhidgetInterfaceKit_create(&(this->ifKit));
 
 	//Set the handlers to be run when the device is plugged in or opened from software, unplugged or closed from software, or generates an error.
@@ -75,8 +74,8 @@ int CCONV Phidget::attachHandler(CPhidgetHandle IFK, void *userptr) {
 };
 
 
-void Phidget::setInputHandler(PhidgetAction * handler) {
-	this->inputHandler=handler;
+void Phidget::addInputHandler(PhidgetAction * handler) {
+	this->inputHandler.push_back(handler);
 }
 
 
@@ -103,8 +102,8 @@ int CCONV Phidget::errorHandler(CPhidgetHandle IFK, void *userptr, int errorCode
 int CCONV Phidget::inputChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int index, int state){
 	Log::logger->log("PHIDGET",DEBUG) << "InputChangeHandler index:"<<index<< " state:"<< state << endl;
 	if (Phidget::singleton!=NULL) {
-		if (Phidget::singleton->inputHandler!=NULL) {
-			Phidget::singleton->inputHandler->inputEvent(index, state);
+		for (std::vector<PhidgetAction *>::iterator it = Phidget::singleton->inputHandler.begin() ; it != Phidget::singleton->inputHandler.end(); ++it) {
+			(*it)->inputEvent(index, state);
 		}
 	}
 	return 0;

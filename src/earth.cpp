@@ -2,6 +2,8 @@
 #include <thread>
 #include <unistd.h>
 #include "log.h"
+#include "config.h"
+#include "phidget.h"
 
 Earth * Earth::singleton=NULL;
 
@@ -9,6 +11,33 @@ void Earth::init(uint8_t servo, double longitude, double latitude) {
 	Earth::singleton=new Earth(servo, longitude, latitude);
 }
 
+void Earth::attachPhidget() {
+	if (Config::config()->hasPhidget()) {
+		Phidget::singleton->addInputHandler(Earth::singleton);
+	}
+}
+
+void Earth::inputEvent(int index, int state) {
+	if (index==Config::config()->inputIndexEarth()) {
+		if (state) {
+			Phidget * captor=Phidget::singleton;
+			if (Earth::running()) {
+				if (Config::config()->outputIndexEarth()!=Config::NOTDEFINED) {
+					Log::logger->log("TRACKER",NOTICE) << "Unlight the LED Earth" << Config::config()->outputIndexEarth()<< endl;
+					captor->setOutput(Config::config()->outputIndexScan(),0);
+				}
+				Earth::stop();
+			} else {
+				if (Config::config()->outputIndexEarth()!=Config::NOTDEFINED) {
+					Log::logger->log("TRACKER",NOTICE) << "Light the LED Earth" << Config::config()->outputIndexEarth()<< endl;
+					captor->setOutput(Config::config()->outputIndexScan(),1);
+				}
+				Earth::start();
+			}
+		}
+	}
+
+}
 
 bool Earth::running() {
 	return Earth::singleton->go;

@@ -8,6 +8,7 @@ using namespace std;
 #include <map>
 #include <string>
 #include "phidgetaction.h"
+#include <vector>
 
 class Phidget {
 public:
@@ -23,7 +24,7 @@ public:
 	double getVoltage();
 	double getRightLux();
 	double getLeftLux();
-	void setInputHandler(PhidgetAction * handler);
+	void addInputHandler(PhidgetAction * handler);
 	void setOutput(int index, bool state);
 
 protected:
@@ -32,7 +33,7 @@ protected:
 	const char * name;
 	CPhidgetInterfaceKitHandle ifKit;
 	
-	PhidgetAction * inputHandler;
+	std::vector<PhidgetAction *> inputHandler;
 
 	static int CCONV attachHandler(CPhidgetHandle IFK, void *userptr);
 	static int CCONV detachHandler(CPhidgetHandle IFK, void *userptr);

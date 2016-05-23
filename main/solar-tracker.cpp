@@ -79,6 +79,7 @@ int main(int argc, char ** argv) {
               Log::logger->log("MAIN",DEBUG) << "Trying to attach phidget board" << endl;
           		Phidget::attach();
               Tracker::attachPhidget();
+              if (params->get("earth-servo")->isAssign()) Earth::attachPhidget();
           	}
             Log::logger->log("MAIN",DEBUG) << "Trying to initiate http server" << endl;
           	HttpServer * server=new HttpServer(params->get("http-port")->asInt(), params->get("document-root")->asString());

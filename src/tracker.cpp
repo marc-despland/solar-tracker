@@ -12,7 +12,7 @@ Tracker * Tracker::tracker() {
 
 void Tracker::attachPhidget() {
 	if (Config::config()->hasPhidget()) {
-		Phidget::singleton->setInputHandler(Tracker::me);
+		Phidget::singleton->addInputHandler(Tracker::me);
 	}
 }
 

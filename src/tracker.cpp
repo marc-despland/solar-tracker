@@ -37,18 +37,21 @@ void Tracker::scan() {
 	for (uint16_t i=start; i<end; i+=step) {
 		earth->setPosition(i);
 		usleep(200000);
-		if (this->maxleft<captor->getLeftLux()) {
-			this->maxleft=captor->getLeftLux();
+		double left=captor->getLeftLux();
+		double right=captor->getRightLux();
+		if (this->maxleft<left) {
+			this->maxleft=left;
 			this->angleleft=earth->getAngle();
 		}
-		if (this->maxright<captor->getRightLux()) {
-			this->maxright=captor->getRightLux();
+		if (this->maxright<right) {
+			this->maxright=right;
 			this->angleright=earth->getAngle();
 		}
-		if (this->maxlux<(captor->getRightLux()+captor->getLeftLux())) {
-			this->maxlux=(captor->getRightLux()+captor->getLeftLux());
+		if (this->maxlux<(left+right)) {
+			this->maxlux=(left+right);
 			this->anglelux=earth->getAngle();
 		}
+		Log::logger->log("TRACKER",NOTICE) << "Max lux = " << this->maxlux << " Current = "<< left+right << endl;
 	}
 	earth->setAngle(this->anglelux);
 

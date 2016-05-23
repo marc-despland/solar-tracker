@@ -7,6 +7,7 @@ using namespace std;
 #include <stdlib.h>
 #include <map>
 #include <string>
+#include "phidgetaction.h"
 
 class Phidget {
 public:
@@ -22,13 +23,16 @@ public:
 	double getVoltage();
 	double getRightLux();
 	double getLeftLux();
+	void setInputHandler(PhidgetAction * handler);
+	void setOutput(int index, bool state);
 
 protected:
 
 	int serial;
 	const char * name;
 	CPhidgetInterfaceKitHandle ifKit;
-	void setOutput(int index, bool state);
+	
+	PhidgetAction * inputHandler;
 
 	static int CCONV attachHandler(CPhidgetHandle IFK, void *userptr);
 	static int CCONV detachHandler(CPhidgetHandle IFK, void *userptr);

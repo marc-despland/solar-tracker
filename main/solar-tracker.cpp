@@ -25,6 +25,7 @@ int main(int argc, char ** argv) {
     if (options.get("config")->isAssign()) {
       config=options.get("config")->asString();
     }
+    Config::config()->loadOptions(&options);
     Parameters * params=new Parameters(config);
     params->add("document-root", "Root folder to serve documents", true);
     params->add("longitude", "The longitude of the installation point", true);
@@ -37,6 +38,11 @@ int main(int argc, char ** argv) {
     params->add("pole-servo", "The code number of the servo to align to the celest pole", false);
     params->add("ecliptic-servo", "The code number of the servo to align ecliptic plan", false);
     params->add("reverse-earth-servo", "The code number of the servo to reverse earth rotation (mirror alignment)", false);
+
+    params->add("input-scan", "The index on the Phidget board for the scan button", false);
+    params->add("output-scan", "The index on the Phidget board for the scan LED", false);
+    params->add("input-earth", "The index on the Phidget board for the earth rotation button", false);
+    params->add("output-earth", "The index on the Phidget board for the earth rotation LED", false);
 
 
     if (options.get("create")->isAssign()) {
@@ -53,6 +59,8 @@ int main(int argc, char ** argv) {
     try {
       try {
         params->parse();
+        Config::config()->loadParameters(params);
+       
         try {
         	if (params->get("have-maestro")->asBool()) {
            		if (Maestro::init()) {
@@ -68,9 +76,13 @@ int main(int argc, char ** argv) {
           		}
           	}
           	if (params->get("have-phidget")->asBool()) {
+              Log::logger->log("MAIN",DEBUG) << "Trying to attach phidget board" << endl;
           		Phidget::attach();
+              Tracker::attachPhidget();
           	}
+            Log::logger->log("MAIN",DEBUG) << "Trying to initiate http server" << endl;
           	HttpServer * server=new HttpServer(params->get("http-port")->asInt(), params->get("document-root")->asString());
+            Log::logger->log("MAIN",DEBUG) << "Trying to start http server" << endl;
           	server->start();
           	Log::logger->log("MAIN",NOTICE) << "Deamon start listening on port = " << params->get("http-port")->asInt() << endl;
           	(void) getc (stdin);

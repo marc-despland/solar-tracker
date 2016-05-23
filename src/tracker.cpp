@@ -2,6 +2,19 @@
 #include "phidget.h"
 #include "earth.h"
 #include <unistd.h>
+#include "log.h"
+Tracker * Tracker::me=new Tracker();
+
+
+Tracker * Tracker::tracker() {
+	return me;
+}
+
+void Tracker::attachPhidget() {
+	if (Config::config()->hasPhidget()) {
+		Phidget::singleton->setInputHandler(Tracker::me);
+	}
+}
 
 Tracker::Tracker() {
 	this->angleleft=-1;
@@ -23,7 +36,7 @@ void Tracker::scan() {
 	usleep(1000000);
 	for (uint16_t i=start; i<end; i+=step) {
 		earth->setPosition(i);
-		usleep(50000);
+		usleep(200000);
 		if (this->maxleft<captor->getLeftLux()) {
 			this->maxleft=captor->getLeftLux();
 			this->angleleft=earth->getAngle();
@@ -38,5 +51,24 @@ void Tracker::scan() {
 		}
 	}
 	earth->setAngle(this->anglelux);
+
+}
+
+
+void Tracker::inputEvent(int index, int state) {
+	if (index==Config::config()->inputIndexScan()) {
+		if (state) {
+			Phidget * captor=Phidget::singleton;
+			if (Config::config()->outputIndexScan()!=Config::NOTDEFINED) {
+				Log::logger->log("TRACKER",NOTICE) << "Light the LED " << Config::config()->outputIndexScan()<< endl;
+				captor->setOutput(Config::config()->outputIndexScan(),1);
+			}
+			this->scan();
+			if (Config::config()->outputIndexScan()!=Config::NOTDEFINED) {
+				Log::logger->log("TRACKER",NOTICE) << "Unlight the LED " << Config::config()->outputIndexScan()<< endl;
+				captor->setOutput(Config::config()->outputIndexScan(),0);
+			}
+		}
+	}
 
 }

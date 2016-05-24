@@ -23,7 +23,7 @@ Regulator::Regulator() {
 
 
 void Regulator::inputEvent(int index, int state) {
-	if (index==Config::config()->inputIndexScan()) {
+	if (index==Config::config()->inputIndexEarth()) {
 		if (state) {
 			Phidget * captor=Phidget::singleton;
 			if (Config::config()->outputIndexEarth()!=Config::NOTDEFINED) {
@@ -52,8 +52,8 @@ void Regulator::scan() {
 		double right=captor->getRightLux();
 		reguled=(left>=right*0.95) && (left<=right*1.05);
 		if (!reguled && (left>right*1.05)) {
-			position+=step;
-			if (position>end) {
+			position-=step;
+			if (position<start) {
 				reguled=true; 
 			} else {
 				earth->setPosition(position);
@@ -61,7 +61,7 @@ void Regulator::scan() {
 			}
 		}
 		if (!reguled && (left<right*0.95)) {
-			position-=step;
+			position+=step;
 			if (position>end) {
 				reguled=true; 
 			} else {

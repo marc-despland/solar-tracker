@@ -52,6 +52,7 @@ void Tracker::scan() {
 			this->anglelux=earth->getAngle();
 		}
 		Log::logger->log("TRACKER",NOTICE) << "Max lux = " << this->maxlux << " Current = "<< left+right << endl;
+		Log::logger->log("TRACKER",NOTICE) << "Max Angle = " << this->anglelux << " Current = "<< earth->getAngle() << endl;
 	}
 	earth->setAngle(this->anglelux);
 
@@ -64,12 +65,12 @@ void Tracker::inputEvent(int index, int state) {
 			Phidget * captor=Phidget::singleton;
 			if (Config::config()->outputIndexScan()!=Config::NOTDEFINED) {
 				Log::logger->log("TRACKER",NOTICE) << "Light the LED " << Config::config()->outputIndexScan()<< endl;
-				//captor->setOutput(Config::config()->outputIndexScan(),1);
+				captor->setOutput(Config::config()->outputIndexScan(),1);
 			}
 			this->scan();
 			if (Config::config()->outputIndexScan()!=Config::NOTDEFINED) {
 				Log::logger->log("TRACKER",NOTICE) << "Unlight the LED " << Config::config()->outputIndexScan()<< endl;
-				//captor->setOutput(Config::config()->outputIndexScan(),0);
+				captor->setOutput(Config::config()->outputIndexScan(),0);
 			}
 		}
 	}

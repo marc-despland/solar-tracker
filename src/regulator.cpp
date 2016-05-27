@@ -9,6 +9,7 @@
 
 
 Regulator::Regulator() :SearchAlgorithm() {
+
 }
 
 SearchResult * Regulator::search() {
@@ -23,8 +24,8 @@ SearchResult * Regulator::search() {
 		result->right=this->captor->getRightLux();
 		reguled=(result->left>=result->right*0.95) && (result->left<=result->right*1.05);
 		if (!reguled && (result->left>result->right*1.05)) {
-			result->position+=step;
-			if (result->position>end) {
+			result->position-=step;
+			if (result->position<start) {
 				reguled=true; 
 			} else {
 				this->earth->setPosition(result->position);
@@ -32,7 +33,7 @@ SearchResult * Regulator::search() {
 			}
 		}
 		if (!reguled && (result->left<result->right*0.95)) {
-			result->position-=step;
+			result->position+=step;
 			if (result->position>end) {
 				reguled=true; 
 			} else {

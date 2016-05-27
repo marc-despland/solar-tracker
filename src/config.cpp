@@ -59,14 +59,14 @@ void Config::loadParameters(Parameters * params) {
 	}
 	try {
 		if (params->get("input-earth")->isAssign()) {
-			this->inputscan=params->get("input-earth")->asInt();
+			this->inputearth=params->get("input-earth")->asInt();
 		}
 	} catch (UnknownParameterNameException &e) {
 		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter input-earth" << endl;
 	}
 	try {
 		if (params->get("output-earth")->isAssign()) {
-			this->outputscan=params->get("output-earth")->asInt();
+			this->outputearth=params->get("output-earth")->asInt();
 		}
 	} catch (UnknownParameterNameException &e) {
 		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter output-earth" << endl;
@@ -136,11 +136,11 @@ int Config::inputIndexScan(){
 }
 
 int Config::inputIndexEarth(){
-	return me->outputearth;
+	return me->inputearth;
 }
 
 int Config::outputIndexEarth(){
-	return me->inputearth;
+	return me->outputearth;
 }
 
 int Config::outputIndexScan(){

@@ -11,6 +11,15 @@ Config::Config() {
 	this->outputscan=Config::NOTDEFINED;
 	this->inputearth=Config::NOTDEFINED;
 	this->outputearth=Config::NOTDEFINED;
+	this->inputregulator=Config::NOTDEFINED;
+	this->outputregulator=Config::NOTDEFINED;
+
+	this->servoearth=Config::NOTDEFINED;
+	this->servoreverseearth=Config::NOTDEFINED;
+
+	this->coord_longitude=0;
+	this->coord_latitude=0;
+
 }
 
 
@@ -62,6 +71,54 @@ void Config::loadParameters(Parameters * params) {
 	} catch (UnknownParameterNameException &e) {
 		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter output-earth" << endl;
 	}
+	try {
+		if (params->get("input-regulator")->isAssign()) {
+			this->inputregulator=params->get("input-regulator")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter input-regulator" << endl;
+	}
+	try {
+		if (params->get("output-regulator")->isAssign()) {
+			this->outputregulator=params->get("output-regulator")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter output-earth" << endl;
+	}
+
+
+	try {
+		if (params->get("earth-servo")->isAssign()) {
+			this->servoearth=params->get("earth-servo")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter earth-servo" << endl;
+	}
+	try {
+		if (params->get("output-regulator")->isAssign()) {
+			this->servoreverseearth=params->get("reverse-earth-servo")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter reverse-earth-servo" << endl;
+	}
+
+
+
+	try {
+		if (params->get("longitude")->isAssign()) {
+			this->coord_longitude=params->get("longitude")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter longitude" << endl;
+	}
+	try {
+		if (params->get("latitude")->isAssign()) {
+			this->coord_latitude=params->get("latitude")->asInt();
+		}
+	} catch (UnknownParameterNameException &e) {
+		Log::logger->log("CONFIG", DEBUG) << "Not defined parameter latitude" << endl;
+	}
+
 
 }
 
@@ -90,3 +147,33 @@ int Config::outputIndexScan(){
 	return me->outputscan;
 }
 
+
+int Config::inputIndexRegulator(){
+	return me->outputregulator;
+}
+
+int Config::outputIndexRegulator(){
+	return me->outputregulator;
+}
+
+double Config::latitude() {
+	return this->coord_latitude;
+}
+
+double Config::longitude() {
+	return this->coord_longitude;
+}
+
+bool Config::hasServoEarth() {
+	return this->servoearth!=Config::NOTDEFINED;
+}
+int Config::servoEarth(){
+	return this->servoearth;
+}
+
+bool Config::hasServoReverseEarth(){
+	return this->servoreverseearth!=Config::NOTDEFINED;
+}
+int Config::servoReverseEarth(){
+	return this->servoreverseearth;
+}

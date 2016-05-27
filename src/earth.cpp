@@ -11,34 +11,6 @@ void Earth::init(uint8_t servo, double longitude, double latitude) {
 	Earth::singleton=new Earth(servo, longitude, latitude);
 }
 
-void Earth::attachPhidget() {
-	if (Config::config()->hasPhidget()) {
-		Phidget::singleton->addInputHandler(Earth::singleton);
-	}
-}
-
-void Earth::inputEvent(int index, int state) {
-	if (index==Config::config()->inputIndexEarth()) {
-		if (state) {
-			Phidget * captor=Phidget::singleton;
-			if (Earth::running()) {
-				if (Config::config()->outputIndexEarth()!=Config::NOTDEFINED) {
-					Log::logger->log("TRACKER",NOTICE) << "Unlight the LED Earth" << Config::config()->outputIndexEarth()<< endl;
-					captor->setOutput(Config::config()->outputIndexScan(),0);
-				}
-				Earth::stop();
-			} else {
-				if (Config::config()->outputIndexEarth()!=Config::NOTDEFINED) {
-					Log::logger->log("TRACKER",NOTICE) << "Light the LED Earth" << Config::config()->outputIndexEarth()<< endl;
-					captor->setOutput(Config::config()->outputIndexScan(),1);
-				}
-				Earth::start();
-			}
-		}
-	}
-
-}
-
 bool Earth::running() {
 	return Earth::singleton->go;
 }
@@ -50,6 +22,11 @@ double Earth::getTheoricalAngle() {
 	return Earth::getTheoricalAngle(Earth::singleton->longitude);
 }
 
+
+void Earth::setReverseServo(Servo * reverse) {
+	this->reverse=reverse;
+	this->reverse->setPosition(((this->reverse->getMax()-this->reverse->getMin())/2)-(((this->getMax()-this->getMin())/2)-this->getPosition())/2);
+}
 
 Earth * Earth::instance() {
 	return Earth::singleton;
@@ -86,7 +63,7 @@ Earth::Earth(uint8_t servo, double longitude, double latitude) : Servo( servo, "
 	this->latitude=latitude;
 	this->setAngle(Earth::getTheoricalAngle(longitude));
 	this->initpos=this->getPosition();
-
+	this->reverse=NULL;
 	Log::logger->log("Earth",DEBUG) << "Earth tracker initialize servo("<<(uint16_t) servo<< ") position:" << this->initpos << endl;
 }
 
@@ -116,3 +93,22 @@ void Earth::execute() {
 	}
 
 }
+
+
+void Earth::setAngle(double angle) {
+	if (this->reverse!=NULL) {
+		double oldearth=this->getAngle();
+		double oldreverse=this->reverse->getAngle();
+		this->reverse->setAngle(oldreverse-(angle-oldearth)/2);
+	}
+	this->Servo::setAngle(angle);
+}
+void Earth::setPosition(uint16_t position) {
+	if (this->reverse!=NULL) {
+		uint16_t oldearth=this->getPosition();
+		uint16_t oldreverse=this->reverse->getPosition();
+		this->reverse->setPosition(oldreverse-(position-oldearth)/2);
+	}
+	this->Servo::setPosition(position);
+}
+

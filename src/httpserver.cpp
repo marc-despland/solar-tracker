@@ -8,7 +8,7 @@
 #include "maestro.h"
 #include "servo.h"
 #include "earth.h"
-#include "tracker.h"
+#include "controller.h"
 #include <sstream>
 #include <sys/stat.h> 
 #include <fcntl.h>
@@ -206,22 +206,22 @@ struct MHD_Response * HttpServer::statusEarthRotation() {
 }
 
 struct MHD_Response * HttpServer::scanForTheSun() {
-	Tracker::tracker()->scan();
+	TrackerSearchResult * tracker=Controller::controller()->scan();
 	stringstream tmp;
 	tmp << "{" << endl;
 	tmp << "\t\"left\" : {"<<endl;
-	tmp << "\t\t\"lux\": "<< Tracker::tracker()->maxleft <<","<<endl;
-	tmp << "\t\t\"angle\": "<< Tracker::tracker()->angleleft <<endl;
+	tmp << "\t\t\"lux\": "<< tracker->maxleft <<","<<endl;
+	tmp << "\t\t\"angle\": "<< tracker->angleleft <<endl;
 	tmp << "\t},";
 	tmp << endl;
 	tmp << "\t\"right\" : {"<<endl;
-	tmp << "\t\t\"lux\": "<< Tracker::tracker()->maxright <<","<<endl;
-	tmp << "\t\t\"angle\": "<< Tracker::tracker()->angleright <<endl;
+	tmp << "\t\t\"lux\": "<< tracker->maxright <<","<<endl;
+	tmp << "\t\t\"angle\": "<< tracker->angleright <<endl;
 	tmp << "\t},";
 	tmp << endl;
 	tmp << "\t\"total\" : {"<<endl;
-	tmp << "\t\t\"lux\": "<< Tracker::tracker()->maxlux <<","<<endl;
-	tmp << "\t\t\"angle\": "<< Tracker::tracker()->anglelux <<endl;
+	tmp << "\t\t\"lux\": "<< tracker->maxlux <<","<<endl;
+	tmp << "\t\t\"angle\": "<< tracker->anglelux <<endl;
 	tmp << "\t},";
 	tmp << endl;
 	tmp << "\t\"situation\" : {"<<endl;

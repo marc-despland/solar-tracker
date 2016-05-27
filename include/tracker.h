@@ -1,24 +1,28 @@
 #ifndef _TRACKER_H
 #define _TRACKER_H
 #include "config.h"
-#include "phidgetlistener.h"
 
-class Tracker : public PhidgetListener{
+
+#include "config.h"
+#include "searchalgorithm.h"
+
+
+class TrackerSearchResult : public SearchResult{
 public:
-	static Tracker * tracker();
-	static void attachPhidget();
-	void scan();
-	void inputEvent(int index, int state);
-	double angleleft;
-	double angleright;
-	double maxleft;
-	double maxright;
-	double maxlux;
-	double anglelux;
+	double angleleft=-1;
+	double angleright=-1;
+	double maxleft=-1;
+	double maxright=-1;
+	double maxlux=-1;
+	double anglelux=-1;
+};
+
+class Tracker : public SearchAlgorithm {
+public:
+	Tracker();
+	SearchResult * search();
 
 protected:
-	static Tracker * me;
-	Tracker();
 
 };
 

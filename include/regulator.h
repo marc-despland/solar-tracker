@@ -1,19 +1,23 @@
 #ifndef _REGULATOR_H
 #define _REGULATOR_H
 #include "config.h"
-#include "phidgetlistener.h"
+#include "searchalgorithm.h"
 
 
-class Regulator : public PhidgetListener {
+class RegulatorSearchResult : public SearchResult{
 public:
-	static Regulator * regulator();
-	static void attachPhidget();
-	void scan();
-	void inputEvent(int index, int state);
-protected:
-	static Regulator * me;
-	Regulator();
+	double left=0;
+	double right=0;
+	uint16_t position=0;
+};
 
+
+class Regulator: public SearchAlgorithm{
+public:
+	Regulator();
+	SearchResult * search();
+
+protected:
 };
 
 #endif

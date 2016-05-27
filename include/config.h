@@ -19,7 +19,18 @@ public:
 	int inputIndexEarth();
 	int outputIndexEarth();
 	int outputIndexScan();
+	int inputIndexRegulator();
+	int outputIndexRegulator();
 
+	bool hasServoEarth();
+	int servoEarth();
+
+	bool hasServoReverseEarth();
+	int servoReverseEarth();
+
+	double latitude();
+	double longitude();
+	
 protected:
 	Config();
 	static Config * me;
@@ -29,6 +40,14 @@ protected:
 	int outputscan;
 	int inputearth;
 	int outputearth;
+	int inputregulator;
+	int outputregulator;
+
+	int servoearth;
+	int servoreverseearth;
+
+	double coord_longitude;
+	double coord_latitude;
 };
 
 #endif

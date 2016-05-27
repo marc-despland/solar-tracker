@@ -8,8 +8,9 @@
 #include "earth.h"
 #include "options.h"
 #include "parameters.h"
-#include "tracker.h"
+#include "controller.h"
 #include "regulator.h"
+#include "searchalgorithm.h"
 #include <unistd.h>
 
 int main(int argc, char ** argv) {
@@ -44,6 +45,8 @@ int main(int argc, char ** argv) {
     params->add("output-scan", "The index on the Phidget board for the scan LED", false);
     params->add("input-earth", "The index on the Phidget board for the earth rotation button", false);
     params->add("output-earth", "The index on the Phidget board for the earth rotation LED", false);
+    params->add("input-regulator", "The index on the Phidget board for the regulation start button", false);
+    params->add("output-regulator", "The index on the Phidget board for the regulation LED", false);
 
 
     if (options.get("create")->isAssign()) {
@@ -54,33 +57,17 @@ int main(int argc, char ** argv) {
       }
       exit(0);
     }
-    Servo * pole=NULL;
-    Servo * ecliptic=NULL;
-    Servo * reverse=NULL;
     try {
       try {
         params->parse();
         Config::config()->loadParameters(params);
        
         try {
-        	if (params->get("have-maestro")->asBool()) {
-           		if (Maestro::init()) {
-            		if (params->get("pole-servo")->isAssign()) pole=new Servo(params->get("pole-servo")->asInt(), "pole orientation");
-            		usleep(500000);
-            		if (params->get("earth-servo")->isAssign()) Earth::init(params->get("earth-servo")->asInt(),params->get("longitude")->asDouble(),params->get("latitude")->asDouble());
-            		usleep(500000);
-            		if (params->get("ecliptic-servo")->isAssign()) ecliptic=new Servo(params->get("ecliptic-servo")->asInt(), "ecliptic");
-            		usleep(500000);
-            		if (params->get("reverse-earth-servo")->isAssign()) reverse=new Servo(params->get("reverse-earth-servo")->asInt(), "reverse");
-          		} else {
-            		Log::logger->log("MAIN",EMERGENCY) << "No Maestro controller detected" << endl;
-          		}
-          	}
+        	Controller::controller()->init();
           	if (params->get("have-phidget")->asBool()) {
               Log::logger->log("MAIN",DEBUG) << "Trying to attach phidget board" << endl;
           		Phidget::attach();
-              Tracker::attachPhidget();
-              Regulator::attachPhidget();
+              Controller::attachPhidget();
               //if (params->get("earth-servo")->isAssign()) Earth::attachPhidget();
           	}
             Log::logger->log("MAIN",DEBUG) << "Trying to initiate http server" << endl;
